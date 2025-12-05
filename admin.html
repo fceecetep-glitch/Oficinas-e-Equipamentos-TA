@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel Admin - Instituições Credenciadas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background: linear-gradient(90deg, #004aad, #007b55);
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+
+    header a {
+      color: white;
+      text-decoration: none;
+      background: rgba(255,255,255,0.15);
+      padding: 6px 12px;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+
+    header a:hover {
+      background: rgba(255,255,255,0.3);
+    }
+
+    main {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h2, h3 {
+      color: #004aad;
+      margin-top: 30px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 25px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f0f4f8;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 13px;
+    }
+
+    button {
+      background: #004aad;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #00347a;
+    }
+
+    .danger {
+      background: #d9534f;
+    }
+
+    .danger:hover {
+      background: #b52b27;
+    }
+
+    .add-form, .edit-section {
+      background: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    @media (max-width: 800px) {
+      table, th, td {
+        font-size: 12px;
+      }
+      header h1 {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Painel Administrativo - FCEE</h1>
+  <div>
+    <a href="/">🌍 Ver Mapa</a>
+    <a href="/logout">🚪 Sair</a>
+  </div>
+</header>
+
+<main>
+  <h2>Instituições Credenciadas</h2>
+
+  <form method="POST">
+    <input type="hidden" name="form_type" value="instituicoes">
+    <div class="edit-section">
+      <table>
+        <tr>
+          <th>Município</th>
+          <th>Região</th>
+          <th>Nome</th>
+          <th>Tipo</th>
+          <th>Endereço</th>
+          <th>Telefone</th>
+          <th>Email</th>
+          <th>Qt CIPTEA</th>
+          <th>Qt CIPF</th>
+          <th>Qt Passe Livre</th>
+          <th>Ação</th>
+        </tr>
+        {% if instituicoes %}
+          {% for municipio, insts in instituicoes.items() %}
+            {% for inst in insts %}
+            <tr>
+              <td><input type="text" name="municipio_{{ municipio }}_{{ loop.index0 }}" value="{{ municipio }}" list="municipiosLista" required></td>
+              <td>
+                <select name="regiao_{{ municipio }}_{{ loop.index0 }}">
+                  <option value="">Selecione</option>
+                  {% for opcao in regiao_opcoes %}
+                    <option value="{{ opcao }}" {% if opcao == inst.regiao %}selected{% endif %}>{{ opcao }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+              <td><input type="text" name="nome_{{ municipio }}_{{ loop.index0 }}" value="{{ inst.nome }}" required></td>
+              <td>
+                <select name="tipo_{{ municipio }}_{{ loop.index0 }}">
+                  <option value="CIPTEA" {% if inst.tipo == "CIPTEA" %}selected{% endif %}>CIPTEA</option>
+                  <option value="CIPF" {% if inst.tipo == "CIPF" %}selected{% endif %}>CIPF</option>
+                  <option value="Passe Livre" {% if inst.tipo == "Passe Livre" %}selected{% endif %}>Passe Livre</option>
+                  <option value="Todos" {% if inst.tipo == "Todos" %}selected{% endif %}>Todos</option>
+                </select>
+              </td>
+              <td><input type="text" name="endereco_{{ municipio }}_{{ loop.index0 }}" value="{{ inst.endereco }}" required></td>
+              <td><input type="text" name="telefone_{{ municipio }}_{{ loop.index0 }}" value="{{ inst.telefone }}" required></td>
+              <td><input type="email" name="email_{{ municipio }}_{{ loop.index0 }}" value="{{ inst.email }}" required></td>
+              <td><input type="number" name="quantidade_ciptea_{{ municipio }}_{{ loop.index0 }}" value="{{ inst.quantidade_ciptea }}"></td>
+              <td><input type="number" name="quantidade_cipf_{{ municipio }}_{{ loop.index0 }}" value="{{ inst.quantidade_cipf }}"></td>
+              <td><input type="number" name="quantidade_passe_livre_{{ municipio }}_{{ loop.index0 }}" value="{{ inst.quantidade_passe_livre }}"></td>
+              <td>
+                <button type="submit" name="delete" value="{{ municipio }}_{{ loop.index0 }}" class="danger" onclick="return confirm('Excluir esta instituição?')">Excluir</button>
+              </td>
+            </tr>
+            {% endfor %}
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="11" style="text-align:center; color:#666;">Nenhuma instituição cadastrada ainda.</td>
+          </tr>
+        {% endif %}
+      </table>
+      <p><strong>Totais:</strong> CIPTEA: {{ instituicoes_resumo.totais.ciptea }}, CIPF: {{ instituicoes_resumo.totais.cipf }}, Passe Livre: {{ instituicoes_resumo.totais.passe_livre }}</p>
+      <button type="submit">💾 Salvar Alterações</button>
+    </div>
+  </form>
+
+  <h3>Adicionar Nova Instituição</h3>
+  <form method="POST" class="add-form">
+    <input type="hidden" name="form_type" value="instituicoes">
+    <input type="hidden" name="add" value="1">
+    <p>
+      <b>Município:</b> <input type="text" name="municipio" list="municipiosLista" required>
+      <b>Região:</b>
+      <select name="regiao" required>
+        <option value="">Selecione</option>
+        {% for opcao in regiao_opcoes %}
+          <option value="{{ opcao }}">{{ opcao }}</option>
+        {% endfor %}
+      </select>
+      <b>Nome:</b> <input type="text" name="nome" required>
+      <b>Tipo:</b>
+      <select name="tipo" required>
+        <option value="CIPTEA">CIPTEA</option>
+        <option value="CIPF">CIPF</option>
+        <option value="Passe Livre">Passe Livre</option>
+        <option value="Todos">Todos</option>
+      </select>
+    </p>
+    <p>
+      <b>Endereço:</b> <input type="text" name="endereco" required>
+      <b>Telefone:</b> <input type="text" name="telefone" required>
+      <b>Email:</b> <input type="email" name="email" required>
+    </p>
+    <p>
+      <b>Quantidade CIPTEA:</b> <input type="number" name="quantidade_ciptea">
+      <b>Quantidade CIPF:</b> <input type="number" name="quantidade_cipf">
+      <b>Quantidade Passe Livre:</b> <input type="number" name="quantidade_passe_livre">
+    </p>
+    <button type="submit">➕ Adicionar Instituição</button>
+  </form>
+
+  <h2>Dados Demográficos Gerais</h2>
+  <form method="POST">
+    <input type="hidden" name="form_type" value="demografia">
+    <div class="edit-section">
+      <table>
+        <tr>
+          <th>Tipo</th>
+          {% for faixa in faixas_opcoes %}
+            <th>{{ faixa }}</th>
+          {% endfor %}
+        </tr>
+        {% for tipo in tipos_opcoes %}
+          <tr>
+            <td><strong>{{ tipo }}</strong></td>
+            {% for faixa in faixas_opcoes %}
+              <td>
+                <input type="number" min="0" name="demografia[{{ tipo }}][{{ faixa }}]" value="{{ demografia_grade[tipo][faixa] }}">
+              </td>
+            {% endfor %}
+          </tr>
+        {% endfor %}
+      </table>
+      <p>Preencha a quantidade de carteiras por faixa etária para cada tipo.</p>
+      <button type="submit">💾 Salvar Demografia</button>
+    </div>
+  </form>
+
+  <datalist id="municipiosLista">
+    {% for nome in municipios_lista %}
+      <option value="{{ nome }}">{{ nome }}</option>
+    {% endfor %}
+  </datalist>
+</main>
+
+<footer>
+  © 2025 Fundação Catarinense de Educação Especial - Painel de Administração
+</footer>
+
+<script>
+  const municipioRegiaoMap = {{ municipio_regiao | tojson }};
+
+  function bindAutoRegiao(inputSelector, selectResolver) {
+    document.querySelectorAll(inputSelector).forEach((input) => {
+      input.addEventListener('change', () => {
+        const municipio = input.value.trim();
+        const regiao = municipioRegiaoMap[municipio];
+        const select = selectResolver(input);
+        if (regiao && select) {
+          select.value = regiao;
+        }
+      });
+    });
+  }
+
+  bindAutoRegiao('input[name="municipio"]', () => document.querySelector('select[name="regiao"]'));
+
+  bindAutoRegiao('input[name^="municipio_"]', (input) => {
+    const [_, muniKey, idx] = input.name.split('_');
+    return document.querySelector(`select[name="regiao_${muniKey}_${idx}"]`);
+  });
+</script>
+
+</body>
+</html>

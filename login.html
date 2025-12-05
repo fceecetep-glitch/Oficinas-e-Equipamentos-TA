@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Painel FCEE</title>
+  <style>
+    :root { --gov-red:#bf1e2e; --gov-green:#1b5e20; --gov-blue:#003c6c; }
+    body { margin:0; font-family:"Segoe UI", Arial, sans-serif; background:linear-gradient(160deg,#eef2f7,#e2e8f0); color:#0f172a; }
+    .container { max-width:420px; margin:70px auto; background:#fff; border-radius:14px; box-shadow:0 14px 32px rgba(0,0,0,0.12); padding:28px; border:1px solid #e2e8f0; }
+    h1 { margin:0 0 6px 0; font-size:22px; color:var(--gov-blue); text-align:center; }
+    p.sub { margin:0 0 18px 0; text-align:center; color:#475569; }
+    label { display:block; margin-top:12px; font-weight:600; color:#1f2937; }
+    input { width:100%; padding:10px 12px; margin-top:6px; border-radius:10px; border:1px solid #cbd5e1; font-size:14px; box-sizing:border-box; }
+    button { margin-top:18px; width:100%; padding:12px; border:none; border-radius:10px; background:var(--gov-blue); color:#fff; font-weight:700; font-size:15px; cursor:pointer; box-shadow:0 10px 24px rgba(0,60,108,0.25); }
+    button:hover { background:#024272; }
+    .error { background:#fee2e2; color:#991b1b; border:1px solid #fecaca; padding:10px 12px; border-radius:10px; margin-bottom:12px; }
+    .logos { display:flex; justify-content:center; gap:12px; margin-bottom:12px; }
+    .logos div { width:72px; height:72px; background:#f1f5f9; border-radius:10px; display:flex; align-items:center; justify-content:center; border:1px solid #e2e8f0; font-size:12px; color:#475569; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logos">
+      <div>govsc.jpg</div>
+      <div>fcee.jpg</div>
+    </div>
+    <h1>Painel Administrativo</h1>
+    <p class="sub">Acesse para atualizar instituições e dados demográficos.</p>
+    {% if error %}
+      <div class="error">{{ error }}</div>
+    {% endif %}
+    <form method="POST">
+      <label for="username">Usuário</label>
+      <input type="text" id="username" name="username" required>
+      <label for="password">Senha</label>
+      <input type="password" id="password" name="password" required>
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+</body>
+</html>
